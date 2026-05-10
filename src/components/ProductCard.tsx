@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react';
+import { ArrowRight, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatCurrency, type Product } from '../data/catalog';
 
@@ -27,6 +27,7 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
           <Link to={`/product/${product.slug}`} className="mini-button">
             View
+            <ArrowRight size={14} />
           </Link>
         </div>
       </div>

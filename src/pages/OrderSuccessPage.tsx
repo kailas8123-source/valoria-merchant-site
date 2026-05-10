@@ -1,4 +1,4 @@
-import { CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function OrderSuccessPage() {
@@ -13,9 +13,11 @@ export function OrderSuccessPage() {
         </p>
         <div className="hero-actions">
           <Link className="button primary" to="/shop">
+            <ShoppingBag size={16} />
             Continue Shopping
           </Link>
           <Link className="button secondary" to="/">
+            <ArrowLeft size={16} />
             Back Home
           </Link>
         </div>

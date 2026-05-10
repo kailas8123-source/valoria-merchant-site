@@ -1,3 +1,4 @@
+import { CheckCircle2, ShoppingBag } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { formatCurrency, products, shippingThreshold } from '../data/catalog';
@@ -36,6 +37,7 @@ export function CheckoutPage() {
           <h2>No items ready for checkout</h2>
           <p>Add products to the cart before continuing.</p>
           <Link className="button primary" to="/shop">
+            <ShoppingBag size={16} />
             Go To Shop
           </Link>
         </div>
@@ -130,7 +132,7 @@ export function CheckoutPage() {
                   <div>
                     <strong>{row.product.name}</strong>
                     <div className="muted">
-                      {row.item.color} · {row.item.size} · Qty {row.item.quantity}
+                      {row.item.color} / {row.item.size} / Qty {row.item.quantity}
                     </div>
                   </div>
                   <span>{formatCurrency(row.product.price * row.item.quantity)}</span>
@@ -164,6 +166,7 @@ export function CheckoutPage() {
             <span>{formatCurrency(total)}</span>
           </div>
           <button className="button primary" type="submit">
+            <CheckCircle2 size={16} />
             Place Order
           </button>
         </aside>

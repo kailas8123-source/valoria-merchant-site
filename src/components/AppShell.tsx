@@ -1,4 +1,4 @@
-import { Menu, ShoppingBag } from 'lucide-react';
+import { Menu, ShoppingBag, X } from 'lucide-react';
 import { useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useShop } from '../store/ShopContext';
@@ -32,18 +32,29 @@ export function AppShell() {
             ))}
           </nav>
           <div className="topbar-actions">
-            <Link className="cart-link" to="/cart">
+            <Link
+              className="cart-link"
+              to="/cart"
+              aria-label={`Cart with ${cartCount} item${cartCount === 1 ? '' : 's'}`}
+            >
               <ShoppingBag size={16} />
               <span className="cart-label">Cart</span>
               <span className="cart-count">{cartCount}</span>
             </Link>
-            <button className="menu-button" type="button" onClick={() => setMenuOpen((value) => !value)}>
-              <Menu size={18} />
+            <button
+              aria-controls="mobile-navigation"
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              className="menu-button"
+              type="button"
+              onClick={() => setMenuOpen((value) => !value)}
+            >
+              {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </div>
         {menuOpen ? (
-          <div className="mobile-nav">
+          <nav className="mobile-nav" id="mobile-navigation" aria-label="Mobile navigation">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -54,7 +65,7 @@ export function AppShell() {
                 {item.label}
               </NavLink>
             ))}
-          </div>
+          </nav>
         ) : null}
       </header>
 
@@ -71,9 +82,9 @@ export function AppShell() {
           </div>
           <div>
             <h4>Store</h4>
-            <a href="#/shop">Shop all</a>
-            <a href="#/cart">Cart</a>
-            <a href="#/checkout">Checkout</a>
+            <Link to="/shop">Shop all</Link>
+            <Link to="/cart">Cart</Link>
+            <Link to="/checkout">Checkout</Link>
           </div>
           <div>
             <h4>Support</h4>

@@ -1,4 +1,4 @@
-import { ArrowRight, ShieldCheck, Sparkles, Truck } from 'lucide-react';
+import { ArrowRight, CreditCard, ShieldCheck, ShoppingBag, Sparkles, Truck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatCurrency, products, shippingThreshold, testimonials } from '../data/catalog';
 import { ProductCard } from '../components/ProductCard';
@@ -22,9 +22,11 @@ export function HomePage() {
             </p>
             <div className="hero-actions">
               <Link to="/shop" className="button primary">
+                <ShoppingBag size={16} />
                 Start Shopping
               </Link>
               <Link to="/checkout" className="button secondary">
+                <CreditCard size={16} />
                 View Checkout
               </Link>
             </div>

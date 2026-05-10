@@ -1,4 +1,4 @@
-import { Minus, Plus, Trash2 } from 'lucide-react';
+import { ArrowRight, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatCurrency, products, shippingThreshold } from '../data/catalog';
 import { useShop } from '../store/ShopContext';
@@ -21,6 +21,7 @@ export function CartPage() {
               <h2>Your cart is empty</h2>
               <p>Add products from the catalog to continue.</p>
               <Link className="button primary" to="/shop">
+                <ShoppingBag size={16} />
                 Browse Products
               </Link>
             </div>
@@ -34,20 +35,33 @@ export function CartPage() {
                   <div>
                     <span className="muted">{product.category}</span>
                     <h3>{product.name}</h3>
-                    <p className="muted">Colour: {item.color} · Size: {item.size}</p>
+                    <p className="muted">Colour: {item.color} / Size: {item.size}</p>
                     <strong>{formatCurrency(product.price)}</strong>
                   </div>
                   <div className="cart-controls">
                     <div className="quantity-picker">
-                      <button type="button" onClick={() => updateQuantity(index, item.quantity - 1)}>
+                      <button
+                        aria-label={`Decrease quantity for ${product.name}`}
+                        type="button"
+                        onClick={() => updateQuantity(index, item.quantity - 1)}
+                      >
                         <Minus size={16} />
                       </button>
                       <span>{item.quantity}</span>
-                      <button type="button" onClick={() => updateQuantity(index, item.quantity + 1)}>
+                      <button
+                        aria-label={`Increase quantity for ${product.name}`}
+                        type="button"
+                        onClick={() => updateQuantity(index, item.quantity + 1)}
+                      >
                         <Plus size={16} />
                       </button>
                     </div>
-                    <button className="remove-button" type="button" onClick={() => removeFromCart(index)}>
+                    <button
+                      aria-label={`Remove ${product.name} from cart`}
+                      className="remove-button"
+                      type="button"
+                      onClick={() => removeFromCart(index)}
+                    >
                       <Trash2 size={14} />
                       Remove
                     </button>
@@ -74,6 +88,7 @@ export function CartPage() {
           </div>
           <Link className="button primary" to="/checkout">
             Proceed To Checkout
+            <ArrowRight size={16} />
           </Link>
         </aside>
       </div>

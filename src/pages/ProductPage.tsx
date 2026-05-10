@@ -1,4 +1,4 @@
-import { Minus, Plus, ShieldCheck, Star, Truck } from 'lucide-react';
+import { CreditCard, Minus, Plus, ShieldCheck, ShoppingBag, Star, Truck } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { formatCurrency, products, shippingThreshold } from '../data/catalog';
@@ -47,6 +47,7 @@ export function ProductPage() {
                 {product.colors.map((color) => (
                   <button
                     key={color}
+                    aria-pressed={selectedColor === color}
                     className={selectedColor === color ? 'chip active-chip' : 'chip'}
                     onClick={() => setSelectedColor(color)}
                     type="button"
@@ -62,6 +63,7 @@ export function ProductPage() {
                 {product.sizes.map((size) => (
                   <button
                     key={size}
+                    aria-pressed={selectedSize === size}
                     className={selectedSize === size ? 'chip active-chip' : 'chip'}
                     onClick={() => setSelectedSize(size)}
                     type="button"
@@ -74,11 +76,19 @@ export function ProductPage() {
             <div>
               <span className="field-label">Quantity</span>
               <div className="quantity-picker">
-                <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))}>
+                <button
+                  aria-label="Decrease quantity"
+                  type="button"
+                  onClick={() => setQuantity((value) => Math.max(1, value - 1))}
+                >
                   <Minus size={16} />
                 </button>
                 <span>{quantity}</span>
-                <button type="button" onClick={() => setQuantity((value) => Math.min(product.stock, value + 1))}>
+                <button
+                  aria-label="Increase quantity"
+                  type="button"
+                  onClick={() => setQuantity((value) => Math.min(product.stock, value + 1))}
+                >
                   <Plus size={16} />
                 </button>
               </div>
@@ -96,9 +106,11 @@ export function ProductPage() {
                   })
                 }
               >
+                <ShoppingBag size={16} />
                 Add To Cart
               </button>
               <Link className="button secondary" to="/checkout">
+                <CreditCard size={16} />
                 Buy Now
               </Link>
             </div>
