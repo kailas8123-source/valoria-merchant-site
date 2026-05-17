@@ -1,14 +1,15 @@
-import { CreditCard, Minus, Plus, ShieldCheck, ShoppingBag, Star, Truck } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { CreditCard, Heart, Minus, Plus, ShieldCheck, ShoppingBag, Star, Truck } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { formatCurrency, products, shippingThreshold } from '../data/catalog';
 import { ProductCard } from '../components/ProductCard';
 import { useShop } from '../store/ShopContext';
 
 export function ProductPage() {
   const { slug = '' } = useParams();
+  const navigate = useNavigate();
   const product = products.find((entry) => entry.slug === slug);
-  const { addToCart } = useShop();
+  const { addToCart, isWishlisted, toggleWishlist } = useShop();
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(product?.colors[0] ?? '');
   const [selectedSize, setSelectedSize] = useState(product?.sizes[0] ?? '');
@@ -17,6 +18,20 @@ export function ProductPage() {
     () => products.filter((entry) => entry.slug !== slug).slice(0, 3),
     [slug],
   );
+
+  const selectedItem = {
+    productId: product?.id ?? '',
+    quantity,
+    color: selectedColor,
+    size: selectedSize,
+  };
+
+  useEffect(() => {
+    if (!product) return;
+    setSelectedColor(product.colors[0]);
+    setSelectedSize(product.sizes[0]);
+    setQuantity(1);
+  }, [product]);
 
   if (!product) {
     return <Navigate to="/" replace />;
@@ -32,6 +47,11 @@ export function ProductPage() {
           <span className="eyebrow">{product.category}</span>
           <h1>{product.name}</h1>
           <p className="product-description">{product.description}</p>
+          <div className="product-bullet-grid">
+            {product.bullets.map((bullet) => (
+              <span key={bullet}>{bullet}</span>
+            ))}
+          </div>
           <div className="rating-row">
             <strong>{formatCurrency(product.price)}</strong>
             <span className="product-rating">
@@ -98,21 +118,32 @@ export function ProductPage() {
                 className="button primary"
                 type="button"
                 onClick={() =>
-                  addToCart({
-                    productId: product.id,
-                    quantity,
-                    color: selectedColor,
-                    size: selectedSize,
-                  })
+                  addToCart(selectedItem)
                 }
               >
                 <ShoppingBag size={16} />
                 Add To Cart
               </button>
-              <Link className="button secondary" to="/checkout">
+              <button
+                className="button secondary"
+                type="button"
+                aria-pressed={isWishlisted(product.id)}
+                onClick={() => toggleWishlist(product.id)}
+              >
+                <Heart size={16} fill={isWishlisted(product.id) ? 'currentColor' : 'none'} />
+                Wishlist
+              </button>
+              <button
+                className="button secondary"
+                type="button"
+                onClick={() => {
+                  addToCart(selectedItem);
+                  navigate('/checkout');
+                }}
+              >
                 <CreditCard size={16} />
                 Buy Now
-              </Link>
+              </button>
             </div>
           </div>
 

@@ -23,10 +23,16 @@ type ShopContextValue = {
   cart: CartItem[];
   cartCount: number;
   subtotal: number;
+  wishlist: string[];
+  cartDrawerOpen: boolean;
   addToCart: (item: CartItem) => void;
   updateQuantity: (index: number, quantity: number) => void;
   removeFromCart: (index: number) => void;
   clearCart: () => void;
+  toggleWishlist: (productId: string) => void;
+  isWishlisted: (productId: string) => boolean;
+  openCartDrawer: () => void;
+  closeCartDrawer: () => void;
   checkoutDraft: CheckoutDraft;
   updateCheckoutDraft: (value: Partial<CheckoutDraft>) => void;
 };
@@ -45,8 +51,13 @@ const defaultDraft: CheckoutDraft = {
 const ShopContext = createContext<ShopContextValue | null>(null);
 
 export function ShopProvider({ children }: { children: ReactNode }) {
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [cart, setCart] = useState<CartItem[]>(() => {
     const saved = window.localStorage.getItem('valoria-cart');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [wishlist, setWishlist] = useState<string[]>(() => {
+    const saved = window.localStorage.getItem('valoria-wishlist');
     return saved ? JSON.parse(saved) : [];
   });
   const [checkoutDraft, setCheckoutDraft] = useState<CheckoutDraft>(() => {
@@ -57,6 +68,10 @@ export function ShopProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     window.localStorage.setItem('valoria-cart', JSON.stringify(cart));
   }, [cart]);
+
+  useEffect(() => {
+    window.localStorage.setItem('valoria-wishlist', JSON.stringify(wishlist));
+  }, [wishlist]);
 
   useEffect(() => {
     window.localStorage.setItem('valoria-checkout', JSON.stringify(checkoutDraft));
@@ -72,7 +87,9 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       cart,
       cartCount: cart.reduce((sum, item) => sum + item.quantity, 0),
       subtotal,
-      addToCart: (item) =>
+      wishlist,
+      cartDrawerOpen,
+      addToCart: (item) => {
         setCart((current) => {
           const existingIndex = current.findIndex(
             (entry) =>
@@ -90,7 +107,9 @@ export function ShopProvider({ children }: { children: ReactNode }) {
           }
 
           return [...current, item];
-        }),
+        });
+        setCartDrawerOpen(true);
+      },
       updateQuantity: (index, quantity) =>
         setCart((current) =>
           current.map((entry, currentIndex) =>
@@ -102,11 +121,20 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       removeFromCart: (index) =>
         setCart((current) => current.filter((_, currentIndex) => currentIndex !== index)),
       clearCart: () => setCart([]),
+      toggleWishlist: (productId) =>
+        setWishlist((current) =>
+          current.includes(productId)
+            ? current.filter((entry) => entry !== productId)
+            : [...current, productId],
+        ),
+      isWishlisted: (productId) => wishlist.includes(productId),
+      openCartDrawer: () => setCartDrawerOpen(true),
+      closeCartDrawer: () => setCartDrawerOpen(false),
       checkoutDraft,
       updateCheckoutDraft: (value) =>
         setCheckoutDraft((current) => ({ ...current, ...value })),
     };
-  }, [cart, checkoutDraft]);
+  }, [cart, cartDrawerOpen, checkoutDraft, wishlist]);
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
 }

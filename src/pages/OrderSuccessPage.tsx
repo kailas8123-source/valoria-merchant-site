@@ -6,10 +6,10 @@ export function OrderSuccessPage() {
     <main className="page-shell">
       <div className="panel success-panel">
         <CheckCircle2 size={56} />
-        <h1>Order Confirmed</h1>
+        <h1>Drop Secured</h1>
         <p>
-          The Valoria merchant site now has a complete customer journey from catalog to
-          order confirmation and is ready for payment gateway integration.
+          Your Valoria order is locked in. The storefront is ready for payment gateway,
+          inventory, and fulfillment integrations.
         </p>
         <div className="hero-actions">
           <Link className="button primary" to="/shop">
